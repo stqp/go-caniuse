@@ -12,6 +12,7 @@ A simple command line tool for [caniuse](https://caniuse.com) .
 # Usage
 
 Basic usage.
+
 ```
 $ go-caniuse websockets
 ```
@@ -133,12 +134,14 @@ INFO :
 </details><br>
 
 Filtering browser by `b` flag.
+
 ```
 $ go-caniuse -b firefox websockets
 ```
 
 <details>
 <summary>Result</summary>
+
 ```
 *---------*---------*-------*------*----------------------*---*---*---*---*
 | NAME    | ID      | Y     | A    | N                    | P | X | D | U |
@@ -151,14 +154,18 @@ INFO :
   If you don't know much about status(= Y,A,N,P,X,D,U), try below command.
     $ go-caniuse list status
 ```
+
 </details><br>
 
 Display all browsers.
+
 ```
 $ go-caniuse list browser
 ```
+
 <details>
 <summary>Result</summary>
+
 ```
 
 *----*------------------------*---------*
@@ -204,14 +211,18 @@ $ go-caniuse list browser
 *----*------------------------*---------*
 
 ```
+
 </details><br>
 
 Display all web technologies.
+
 ```
 $ go-caniuse list feature
 ```
+
 <details>
 <summary>Result</summary>
+
 ```
 
 *-----*---------------------------------*----------------------------------------------------------------*
@@ -282,14 +293,18 @@ $ go-caniuse list feature
 ...
 
 ```
+
 </details><br>
 
 Please check what support status flags meaning.
+
 ```
 $ go-caniuse list status
 ```
+
 <details>
 <summary>Result</summary>
+
 ```
 
 *----------------*--------------------------------*
@@ -314,6 +329,7 @@ $ go-caniuse list status
 *----------------*--------------------------------*
 
 ```
+
 </details><br>
 
 # Installation
