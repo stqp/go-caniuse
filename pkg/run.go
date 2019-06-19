@@ -168,7 +168,6 @@ func Run(c *cli.Context) (err error) {
 		l.Fatalf("failed to write results: %w", err)
 	}
 	fmt.Println("")
-	fmt.Println("")
 	fmt.Println("INFO :")
 	fmt.Println("  If you don't know much about status(= Y,A,N,P,X,D,U), try below command.")
 	fmt.Println("    $ go-caniuse list status")
