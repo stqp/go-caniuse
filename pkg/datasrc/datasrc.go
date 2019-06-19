@@ -31,6 +31,14 @@ func init() {
 func Update(force bool) (data []byte, err error) {
 
 	exists, err := utils.Exists(Filepath)
+	if exists && force {
+		if err := os.Remove(Filepath); err != nil {
+			l.Fatal("Failed to delete old data source file")
+			l.Fatal(err)
+			return nil, err
+		}
+	}
+
 	if !exists || force {
 		if err := downloadAndReplace(); err != nil {
 			l.Fatal(err)
@@ -49,12 +57,6 @@ func downloadAndReplace() (err error) {
 		return err
 	}
 	defer resp.Body.Close()
-
-	if err := os.Remove(Filepath); err != nil {
-		l.Fatal("Failed to delete old data source file")
-		l.Fatal(err)
-		return err
-	}
 
 	if err = os.MkdirAll(filepath.Dir(Filepath), 0700); err != nil {
 		return err

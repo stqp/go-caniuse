@@ -6,8 +6,8 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/olekukonko/tablewriter"
 	"github.com/stqp/go-caniuse/pkg/datasrc"
+	"github.com/stqp/go-caniuse/pkg/report"
 	"github.com/tidwall/gjson"
 	"github.com/urfave/cli"
 )
@@ -35,7 +35,9 @@ func Run(c *cli.Context) (err error) {
 
 	stats := supported.Get("stats")
 
-	tableData := [][]string{}
+	tableData := [][]string{
+		[]string{"NAME", "ID", "Y", "A", "N", "P", "X", "D", "U"},
+	}
 
 	stats.ForEach(func(browserId, versions gjson.Result) bool {
 
@@ -135,20 +137,15 @@ func Run(c *cli.Context) (err error) {
 		return true
 	})
 
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetBorders(tablewriter.Border{Left: true, Top: true, Right: true, Bottom: false})
-	table.SetCenterSeparator("|")
-	table.SetCenterSeparator("*")
-	table.SetAlignment(tablewriter.ALIGN_LEFT)
-	table.SetHeader([]string{"name", "id", "y", "a", "n", "p", "x", "d", "u"})
-	table.SetRowLine(true)
-	table.SetAutoMergeCells(true)
-	table.AppendBulk(tableData)
+	output := os.Stdout
+	writer := report.NewWriter(c.String("format"), output)
 
 	fmt.Println("")
 	fmt.Println("Browser versions:")
 	fmt.Println("")
-	table.Render()
+	if err = writer.Write(tableData); err != nil {
+		l.Fatal("failed to write results: %w", err)
+	}
 	fmt.Println("")
 	fmt.Println("")
 	fmt.Println("INFO :")
