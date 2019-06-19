@@ -1,0 +1,17 @@
+project_name: go-caniuse
+builds:
+  - main: main.go
+    goos:
+      - darwin
+      - linux
+      - windows
+      - freebsd
+      - openbsd
+    goarch:
+      - amd64
+      - 386
+      - arm
+      - arm64
+    env:
+      - CGO_ENABLED=0
+
