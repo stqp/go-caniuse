@@ -1,12 +1,12 @@
 package list
 
 import (
-	"fmt"
+	l "log"
 	"os"
 	"strconv"
 
-	"github.com/olekukonko/tablewriter"
 	"github.com/stqp/go-caniuse/pkg/datasrc"
+	"github.com/stqp/go-caniuse/pkg/report"
 	"github.com/tidwall/gjson"
 	"github.com/urfave/cli"
 )
@@ -17,34 +17,22 @@ func Feature(c *cli.Context) (err error) {
 
 	data := gjson.GetBytes(json, "data")
 
-	header := []string{
-		"feature", "Description",
+	tableData := [][]string{
+		{"NO", "FEATURE", "DESCRIPTION"},
 	}
-
-	tableData := [][]string{}
 	index := 1
 	data.ForEach(func(feature, detail gjson.Result) bool {
 		tableData = append(tableData, []string{
 			strconv.Itoa(index), feature.String(), detail.Get("description").String(),
 		})
-		fmt.Println(detail.Get("description").String())
 		index++
-		return false
+		return true
 	})
 
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetBorders(tablewriter.Border{Left: true, Top: true, Right: true, Bottom: false})
-	table.SetCenterSeparator("|")
-	table.SetCenterSeparator("*")
-	table.SetAlignment(tablewriter.ALIGN_LEFT)
-	table.SetHeader(header)
-	table.SetRowLine(true)
-	table.SetAutoMergeCells(true)
-	table.AppendBulk(tableData)
-
-	fmt.Println("")
-	table.Render()
-	fmt.Println("")
+	writer := report.NewWriter(c.String("format"), os.Stdout)
+	if err = writer.Write(tableData); err != nil {
+		l.Fatal("failed to write results: %w", err)
+	}
 
 	return nil
 }

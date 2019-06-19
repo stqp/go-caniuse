@@ -4,10 +4,12 @@ import (
 	"fmt"
 	l "log"
 	"os"
+	"path/filepath"
 	"strconv"
 
 	"github.com/stqp/go-caniuse/pkg/datasrc"
 	"github.com/stqp/go-caniuse/pkg/report"
+	"github.com/stqp/go-caniuse/pkg/utils"
 	"github.com/tidwall/gjson"
 	"github.com/urfave/cli"
 )
@@ -16,27 +18,26 @@ func Run(c *cli.Context) (err error) {
 
 	args := c.Args()
 	if len(args) == 0 {
-		l.Fatal("go-canise require at least 1 argument.")
+		l.Printf("go-canise require at least 1 argument.")
 		cli.ShowAppHelpAndExit(c, 1)
 	}
 
 	search_key := args[0]
 
 	json := datasrc.Data
-
 	agents := gjson.GetBytes(json, "agents")
 	data := gjson.GetBytes(json, "data")
 	supported := data.Get(search_key)
 
 	if !supported.Exists() {
-		l.Fatal("The feature seems not to be supported by any browser...")
-		return nil
+		l.Printf("The feature seems not to be supported by any browser...")
+		cli.ShowAppHelpAndExit(c, 1)
 	}
 
 	stats := supported.Get("stats")
 
 	tableData := [][]string{
-		[]string{"NAME", "ID", "Y", "A", "N", "P", "X", "D", "U"},
+		{"NAME", "ID", "Y", "A", "N", "P", "X", "D", "U"},
 	}
 
 	stats.ForEach(func(browserId, versions gjson.Result) bool {
@@ -138,13 +139,33 @@ func Run(c *cli.Context) (err error) {
 	})
 
 	output := os.Stdout
-	writer := report.NewWriter(c.String("format"), output)
+	if c.String("output") != "" {
+		workingdir, err := os.Getwd()
+		if err != nil {
+			l.Print(err)
+			return nil
+		}
 
-	fmt.Println("")
-	fmt.Println("Browser versions:")
-	fmt.Println("")
+		outpath := filepath.Join(workingdir, c.String("output"))
+		exists, err := utils.Exists(outpath)
+		if exists {
+			l.Printf("Output file already exists: %s", outpath)
+			return nil
+		}
+
+		outfile, err := os.Create(outpath)
+		if err != nil {
+			l.Printf("Failed to create output file: %s", outpath)
+			l.Print(err)
+			return nil
+		}
+
+		output = outfile
+	}
+
+	writer := report.NewWriter(c.String("format"), output)
 	if err = writer.Write(tableData); err != nil {
-		l.Fatal("failed to write results: %w", err)
+		l.Fatalf("failed to write results: %w", err)
 	}
 	fmt.Println("")
 	fmt.Println("")

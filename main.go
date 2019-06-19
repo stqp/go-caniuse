@@ -13,7 +13,7 @@ import (
 /*
 ・data.jsonの場所を指定する機能
     web or file
-    $ go-caniuse websockets -f data.json
+    $
 ・ブラウザ一覧表示機能
     略称
     $ go-caniuse list browser
@@ -37,9 +37,39 @@ func main() {
 
 	app := cli.NewApp()
 	app.Name = "go-caniuse"
-	app.Usage = "show browser support status table for front-end technologies."
+	app.Usage = "show browser support status table for web technologies."
 	app.Action = pkg.Run
 	app.Version = "dev"
+
+	flags := []cli.Flag{
+		cli.StringFlag{
+			Name:  "format, f",
+			Value: "table",
+			Usage: "format (table, csv, json)",
+		},
+		/* TODO
+		// use like this.
+		// $ go-caniuse -i data.json websockets
+		cli.StringFlag{
+			Name:  "input, i",
+			Value: "",
+			Usage: "data file path",
+		},
+		*/
+		// use like this.
+		// $ go-caniuse -o result.txt websockets
+		cli.StringFlag{
+			Name:  "output, o",
+			Value: "",
+			Usage: "output file name",
+		},
+
+		cli.StringFlag{
+			Name:  "browser, b",
+			Value: "all",
+			Usage: "browser name.",
+		},
+	}
 
 	app.Commands = []cli.Command{
 		{
@@ -48,18 +78,21 @@ func main() {
 			Subcommands: []cli.Command{
 				{
 					Name:   "browser",
-					Usage:  "list browsers.",
+					Usage:  "list all browsers.",
 					Action: list.Browser,
+					Flags:  flags,
 				},
 				{
 					Name:   "feature",
-					Usage:  "list browser's feature.",
+					Usage:  "list all feature.",
 					Action: list.Feature,
+					Flags:  flags,
 				},
 				{
 					Name:   "status",
-					Usage:  "list browser's support status.",
+					Usage:  "list support status flags.",
 					Action: list.Status,
+					Flags:  flags,
 				},
 			},
 		},
@@ -70,28 +103,7 @@ func main() {
 		},
 	}
 
-	app.Flags = []cli.Flag{
-		cli.StringFlag{
-			Name:  "format, f",
-			Value: "table",
-			Usage: "format (table, json)",
-		},
-		cli.StringFlag{
-			Name:  "input, i",
-			Value: "",
-			Usage: "data file path",
-		},
-		cli.StringFlag{
-			Name:  "output, o",
-			Value: "",
-			Usage: "output file name",
-		},
-		cli.StringFlag{
-			Name:  "browser, b",
-			Value: "all",
-			Usage: "browser name.",
-		},
-	}
+	app.Flags = flags
 
 	err := app.Run(os.Args)
 	if err != nil {

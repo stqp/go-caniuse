@@ -15,6 +15,7 @@ func Update(c *cli.Context) (err error) {
 	}
 
 	l.Print("Successfulyy updated data source file")
+	l.Print("data source file is: ", datasrc.Filepath)
 
 	return nil
 }

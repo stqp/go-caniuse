@@ -1,7 +1,6 @@
 package list
 
 import (
-	"fmt"
 	l "log"
 	"os"
 	"strconv"
@@ -19,7 +18,7 @@ func Browser(c *cli.Context) (err error) {
 	agents := gjson.GetBytes(json, "agents")
 
 	tableData := [][]string{
-		{"no", "browser", "id"},
+		{"NO", "BROWSER", "ID"},
 	}
 	index := 1
 	agents.ForEach(func(browserId, versions gjson.Result) bool {
@@ -30,13 +29,9 @@ func Browser(c *cli.Context) (err error) {
 		return true
 	})
 
-	output := os.Stdout
-	writer := report.NewWriter(c.String("format"), output)
-	fmt.Println("")
+	writer := report.NewWriter(c.String("format"), os.Stdout)
 	if err = writer.Write(tableData); err != nil {
 		l.Fatal("failed to write results: %w", err)
 	}
-	fmt.Println("")
-
 	return nil
 }

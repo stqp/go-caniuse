@@ -1,20 +1,17 @@
 package list
 
 import (
-	"fmt"
+	l "log"
 	"os"
 
-	"github.com/olekukonko/tablewriter"
+	"github.com/stqp/go-caniuse/pkg/report"
 	"github.com/urfave/cli"
 )
 
 func Status(c *cli.Context) (err error) {
 
-	header := []string{
-		"support status", "description",
-	}
-
 	tableData := [][]string{
+		{"SUPPORT STATUS", "DESCRIPTION"},
 		{"Y", "(Y)es, supported by default."},
 		{"A", "(A)lmost supported (Partially support)."},
 		{"N", "(N)o support, or disabled by default."},
@@ -25,19 +22,10 @@ func Status(c *cli.Context) (err error) {
 		//{"#n", `Where n is a number, starting with 1, corresponds to the notes_by_num note. For example: "42":"y #1" means version 42 is supported by default and see note 1.`},
 	}
 
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetBorders(tablewriter.Border{Left: true, Top: true, Right: true, Bottom: false})
-	table.SetCenterSeparator("|")
-	table.SetCenterSeparator("*")
-	table.SetAlignment(tablewriter.ALIGN_LEFT)
-	table.SetHeader(header)
-	table.SetRowLine(true)
-	table.SetAutoMergeCells(true)
-	table.AppendBulk(tableData)
-
-	fmt.Println("")
-	table.Render()
-	fmt.Println("")
+	writer := report.NewWriter(c.String("format"), os.Stdout)
+	if err = writer.Write(tableData); err != nil {
+		l.Fatal("failed to write results: %w", err)
+	}
 
 	return nil
 }
