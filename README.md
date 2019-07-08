@@ -11,6 +11,13 @@ A simple command line tool for [caniuse](https://caniuse.com) .
 
 # Usage
 
+For the first time, data file is automatically downloaded from [github.com/Fyrd/caniuse](https://github.com/Fyrd/caniuse)    
+But you can download and update data file explicitly.
+
+```
+$ go-caniuse update
+```
+
 Basic usage.
 
 ```
@@ -334,17 +341,27 @@ $ go-caniuse list status
 
 # Installation
 
+## MacOSX / Homebrew
+
+You can use homebrew.
+
+```
+$ brew tap stqp/homebrew-go-caniuse
+$ brew install go-caniuse
+```
+
+## Binary (including Windows)
+
+Get latest release from [this page](https://github.com/stqp/go-caniuse/releases).
+Unpack it somewhere, and add the path of the binary to the $PATH environment. 
+
+## Go user
+
+If you installed golang, you can install by using `go get`.
+
 ```
 $ go get github.com/stqp/go-caniuse
 ```
-
-For the first time, data file is automatically downloaded from [github.com/Fyrd/caniuse](https://github.com/Fyrd/caniuse)    
-But you can download and update data file explicitly.
-
-```
-$ go-caniuse update
-```
-
 
 # License
 
